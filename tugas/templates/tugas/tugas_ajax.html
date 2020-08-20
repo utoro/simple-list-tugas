@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block tugas %}active{% endblock %}
+
+{% block title %} Daftar Tugas {% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <a type="button" class="btn btn-info create-tugas" name="button"><span class="glyphicon glyphicon-plus"> Tambah Tugas</span></a>
+      {# <a type="button" href="{% url 'tambahTugas' %}" class="btn btn-info"><span class="glyphicon glyphicon-plus"> Tambah Tugas</span></a> #}
+    </div>
+  </div>
+  <br>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {# <a href="#" id="test" class='btn btn-xs btn-info' title='Lihat detail'><span class='glyphicon glyphicon-info-sign'></span></a> #}
+          <div class="panel-header" style="text-align: center;"><h2>Daftar Tugas</h2></div>
+          <table id="tblTugas" class="display" style="width:100%">
+            <thead>
+              <tr>
+                <th>Mata Kuliah</th>
+                <th>Judul</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                {# <th>Sisa Waktu</th> #}
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>Mata Kuliah</th>
+                <th>Judul</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                {# <th>Sisa Waktu</th> #}
+                <th>Action</th>
+            </tr>
+        </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+        $(".create-tugas").modalForm({
+            formURL: "{% url 'tambahTugas' %}"
+        });
+
+    });
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      var oTable = $('#tblTugas').DataTable({
+          "processing": true,
+          "serverSide": true,
+          "pagingType": "full_numbers",
+          "pageLength": 5,
+          "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+          // "lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
+          // "scrollY": "250px",
+          // "scrollCollapse": true,
+          // "paging": true,
+          stateSave: true,
+          // "order": [[ 1, "asc" ]], pengurutan
+          "ajax": "{% url 'tugas_list_json' %}",
+          "columnDefs":[{
+              "targets":-1,
+              "data":null,
+              "render": function(data,type,full){
+                return "<a href='/tugas/"+full[4]+"/'"+
+                      " class='btn btn-xs btn-info' title='Lihat detail'>"+
+                      "<span class='glyphicon glyphicon-info-sign'></span></a>"+
+                      "<a href='/tugas/"+full[4]+"/edit/'"+
+                      " class='btn btn-xs btn-success' title='Edit data'>"+
+                      "<span class='glyphicon glyphicon-edit'></span></a>"+
+                      "<form action='/tugas/"+full[4]+"/delete/'"+" method='post' style='display: inline;'>"+
+                      "{% csrf_token %}"+"<input type='hidden' name='tugas_id' value='"+full[4]+"' />"+
+                      "<button type='submit' id='popconfirm' class='btn btn-danger btn-xs popconfirm'>"+
+                      "<span class='glyphicon glyphicon-trash'></span></button></form>"
+              }
+          }]
+      });
+    });
+
+    $("#test").popConfirm({
+        title: "Hapus Data",
+        content: "Hapus data tugas?",
+        placement: "right",
+        yesBtn: "Ya",
+        noBtn: "Tidak"
+      });
+
+  </script>
+{% endblock %}

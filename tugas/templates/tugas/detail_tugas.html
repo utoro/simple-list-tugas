@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Detail Tugas {% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h4 style="display: inline-block;"><b>{{ detail_tugas.judul }}</b></h4>
+          {# <div class="panel-title pull-left"><h3>{{ detail_tugas.judul }}</h3></div> #}
+          <div class="pull-right" style="padding-top: 5px;">
+            <a href="{% url "tugas" %}" class="btn btn-default btn-sm" title='Kembali ke list tugas'><span class='glyphicon glyphicon-chevron-left'></span>&nbsp;Kembali</a>
+            <a href="{% url "ubahTugas" pk=detail_tugas.id %}" class="btn btn-default btn-sm btn-success" title='Edit tugas'><span class='glyphicon glyphicon-edit'></span></a>
+            <a href="{% url "hapusTugas" pk=detail_tugas.id %}" class="btn btn-default btn-sm btn-danger popconfirm" title='Hapus tugas'><span class='glyphicon glyphicon-trash'></span></a>
+          </div>
+        </div>
+
+        <div class="panel-body">
+            <p>
+              {{ detail_tugas.mata_kuliah }}<br>
+              {{ detail_tugas.deskripsi }}<br>
+              {{ detail_tugas.get_jenis_display }}<br>
+              {{ detail_tugas.get_status_display }}<br>
+              {{ detail_tugas.deadline }}<br>
+              {{ detail_tugas.pemilik }}<br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(".popconfirm").popConfirm({
+    title: "Hapus Data",
+    content: "Hapus data tugas?",
+    placement: "left",
+    yesBtn: "Ya",
+    noBtn: "Tidak"
+  });
+</script>
+{% endblock %}

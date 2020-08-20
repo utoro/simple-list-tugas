@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block tugas %}active{% endblock %}
+
+{% block title %} Daftar Tugas {% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="panel-header" style="text-align: center;"><h2>Daftar Tugas</h2></div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Mata Kuliah</th>
+                <th>Judul</th>
+                <th>Deadline</th>
+                <th style="text-align: center;">Sisa Waktu</th><br>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tugas in list_tugas %}
+                <tr>
+                  <td>{{ tugas.mata_kuliah }}</td>
+                  <td>{{ tugas.judul }}</td>
+                  <td>{{ tugas.deadline }}</td>
+                  <td style="text-align: center;">{{ tugas.deadline|timeuntil }}</td>
+                  <td style="text-align: center;">
+                    <a href="{% url "detailTugas" pk=tugas.id %}" class='btn btn-xs btn-info' title='Lihat detail'><span class='glyphicon glyphicon-info-sign'></span></a>
+                    <a href="{% url "ubahTugas" pk=tugas.id %}" class='btn btn-xs btn-success' title='Edit data'><span class='glyphicon glyphicon-edit'></span></a>
+                    {# <a href="{% url "hapusTugas" pk=tugas.id %}" class='btn btn-xs btn-danger popconfirm' title='Hapus data'><span class='glyphicon glyphicon-trash'></span></a> #}
+                    <form action="{% url "hapusTugas" pk=tugas.id %}" method="post" style="display: inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="tugas_id" value="{{ tugas.id }}" />
+                      <button type="submit" class="btn btn-danger btn-xs popconfirm">
+                          <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    $(".popconfirm").popConfirm({
+      title: "Hapus Data",
+      content: "Hapus data tugas?",
+      placement: "left",
+      yesBtn: "Ya",
+      noBtn: "Tidak"
+    });
+  </script>
+{% endblock %}

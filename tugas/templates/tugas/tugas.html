@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block tugas %}active{% endblock %}
+
+{% block title %} Daftar Tugas {% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="panel-header" style="text-align: center;"><h2>Daftar Tugas</h2></div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Mata Kuliah</th>
+                <th>Judul</th>
+                <th>Deadline</th>
+                <th style="text-align: center;">Sisa Waktu</th><br>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if list_tugas %}
+    <table id="tugas">
+        {% for tugas in list_tugas %}
+            <tr>
+                  <td>{{ tugas.mata_kuliah }}</td>
+                  <td>{{ tugas.judul }}</td>
+                  <td>{{ tugas.deadline }}</td>
+                  <td style="text-align: center;">{{ tugas.deadline|timeuntil }}</td>
+                  <td style="text-align: center;">
+                    <a href="{% url "detailTugas" pk=tugas.id %}" class='btn btn-xs btn-info' title='Lihat detail'><span class='glyphicon glyphicon-info-sign'></span></a>
+                    <a href="{% url "ubahTugas" pk=tugas.id %}" class='btn btn-xs btn-success' title='Edit data'><span class='glyphicon glyphicon-edit'></span></a>
+                    {# <a href="{% url "hapusTugas" pk=tugas.id %}" class='btn btn-xs btn-danger popconfirm' title='Hapus data'><span class='glyphicon glyphicon-trash'></span></a> #}
+                    <form action="{% url "hapusTugas" pk=tugas.id %}" method="post" style="display: inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="tugas_id" value="{{ tugas.id }}" />
+                      <button type="submit" class="btn btn-danger btn-xs popconfirm">
+                          <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                    </form>
+                  </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# .... **Now the pagination section** .... #}
+    {% if is_paginated %}
+        <ul class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="/tugas?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="tugas-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="/tugas?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </ul>
+    {% endif %}
+{% else %}
+    <h3>Tugasku</h3>
+    <p>Nggak ketemu!!! :(</p>
+{% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    $(".popconfirm").popConfirm({
+      title: "Hapus Data",
+      content: "Hapus data tugas?",
+      placement: "left",
+      yesBtn: "Ya",
+      noBtn: "Tidak"
+    });
+  </script>
+{% endblock %}
